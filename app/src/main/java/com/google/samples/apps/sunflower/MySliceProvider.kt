@@ -16,13 +16,14 @@
 
 package com.google.samples.apps.sunflower
 
+import android.app.PendingIntent
 import android.content.ContentResolver
 import android.content.Intent
 import android.net.Uri
+import androidx.core.graphics.drawable.IconCompat
 import androidx.slice.Slice
 import androidx.slice.SliceProvider
-import androidx.slice.builders.ListBuilder
-import androidx.slice.builders.SliceAction
+import androidx.slice.builders.*
 
 class MySliceProvider : SliceProvider() {
     /**
@@ -57,46 +58,33 @@ class MySliceProvider : SliceProvider() {
      * Construct the Slice and bind data if available.
      */
     override fun onBindSlice(sliceUri: Uri): Slice? {
-        // Note: you should switch your build.gradle dependency to
-        // slice-builders-ktx for a nicer interface in Kotlin.
-        val context = context ?: return null
-        val activityAction = createActivityAction() ?: return null
-        return if (sliceUri.path == "/") {
-            // Path recognized. Customize the Slice using the androidx.slice.builders API.
-            // Note: ANR and StrictMode are enforced here so don't do any heavy operations. 
-            // Only bind data that is currently available in memory.
-            ListBuilder(context, sliceUri, ListBuilder.INFINITY)
-                    .addRow(
-                            ListBuilder.RowBuilder()
-                                    .setTitle("URI found.")
-                                    .setPrimaryAction(activityAction)
-                    )
-                    .build()
+        val activityAction = createActivityAction()
+        return if (sliceUri.path == "/hello") {
+            list(context, sliceUri, ListBuilder.INFINITY) {
+                row {
+                    primaryAction = activityAction
+                    title = "Open Sunflower!"
+                }
+            }
         } else {
-            // Error: Path not found.
-            ListBuilder(context, sliceUri, ListBuilder.INFINITY)
-                    .addRow(
-                            ListBuilder.RowBuilder()
-                                    .setTitle("URI not found.")
-                                    .setPrimaryAction(activityAction)
-                    )
-                    .build()
+            list(context, sliceUri, ListBuilder.INFINITY) {
+                row {
+                    primaryAction = activityAction
+                    title = "URI not recognized."
+                }
+            }
         }
     }
 
     private fun createActivityAction(): SliceAction? {
-        return null
-        /*
-        Instead of returning null, you should create a SliceAction. Here is an example:
         return SliceAction.create(
             PendingIntent.getActivity(
-                context, 0, Intent(context, MyActivityClass::class.java), 0
+                context, 0, Intent(context, GardenActivity::class.java), 0
             ),
-            IconCompat.createWithResource(context, R.drawable.ic_launcher_foreground),
+            IconCompat.createWithResource(context, R.mipmap.ic_launcher_foreground),
             ListBuilder.ICON_IMAGE,
             "Open App"
         )
-        */
     }
 
     /**
