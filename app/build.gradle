@@ -47,6 +47,8 @@ android {
 }
 
 dependencies {
+    implementation 'androidx.annotation:annotation:1.0.1'
+    implementation 'androidx.slice:slice-builders:1.0.0'
     kapt "androidx.room:room-compiler:$rootProject.roomVersion"
     kapt "com.github.bumptech.glide:compiler:$rootProject.glideVersion"
     implementation "androidx.appcompat:appcompat:$rootProject.supportLibraryVersion"
